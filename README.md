@@ -1,0 +1,2 @@
+# Deloitte-capstone-project-using-AIML-and-Web-technology
+The AI/ML-Driven Demand Forecasting System helps offline sellers identify the most profitable e-commerce platform for their products. Many sellers struggle to decide whether Amazon, Flipkart,Alibaba is best suited for their product category. Traditionally,they experiment across platforms, wasting money,and inventory while facing unpredictable losse

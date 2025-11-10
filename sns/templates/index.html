@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DemandIQ - AI-Powered Demand Forecasting</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="navbar-logo">Demand-ForeCasting</a>
+        <div class="navbar-links">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <div class="navbar-auth">
+            <a href="{{ url_for('login') }}" class="btn-secondary">Login</a>
+            <a href="{{ url_for('login') }}" class="btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>AI-Powered Demand Forecasting</h1>
+            <p>Predict future product demand with precision using advanced machine learning algorithms. Make data-driven decisions and optimize your inventory management.</p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('login') }}" class="btn-primary">Start Forecasting</a>
+                <a href="#about" class="btn-secondary">Learn More</a>
+            </div>
+        </div>
+    </section>
+  <!-- <div class="cap">Made_BY:Dev</div> -->
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title animate-on-scroll">
+                <h2>Why Choose DemandIQ?</h2>
+                <p>Our platform combines cutting-edge AI technology with intuitive design to deliver accurate demand forecasting solutions for businesses of all sizes.</p>
+            </div>
+            <div class="cards-grid">
+                <div class="flip-card animate-on-scroll">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">🤖</div>
+                            <div class="card-title">AI-Powered</div>
+                            <div class="card-description">Advanced machine learning algorithms</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Smart Predictions</div>
+                            <div class="card-description">Our AI models analyze historical data, market trends, and seasonal patterns to provide highly accurate demand forecasts. Machine learning continuously improves prediction accuracy over time.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flip-card animate-on-scroll">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">📊</div>
+                            <div class="card-title">Real-time Analytics</div>
+                            <div class="card-description">Live data processing and insights</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Instant Insights</div>
+                            <div class="card-description">Get real-time analytics and interactive dashboards that help you monitor demand patterns, identify trends, and make informed business decisions instantly.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flip-card animate-on-scroll">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="card-icon">🎯</div>
+                            <div class="card-title">Precision Accuracy</div>
+                            <div class="card-description">Up to 95% forecasting accuracy</div>
+                        </div>
+                        <div class="flip-card-back">
+                            <div class="card-title">Proven Results</div>
+                            <div class="card-description">Our models achieve up to 95% accuracy in demand prediction, helping businesses reduce inventory costs by 30% and increase customer satisfaction through better stock management.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-section animate-on-scroll">
+                <div class="section-title" style="margin-top: 4rem;">
+                    <h2>Meet Our Expert Team</h2>
+                    <p>Passionate professionals dedicated to revolutionizing demand forecasting with cutting-edge AI technology</p>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card animate-on-scroll">
+                        <div class="team-card-inner">
+                            <div class="team-photo">
+                                <img src="/static/images/bhishwa.jpg" alt="Alex Johnson">
+                                <div class="photo-overlay">
+                                   <div class="social-links">
+    <!-- LinkedIn Icon Link -->
+    <a href="https://www.linkedin.com/in/biswarup-dutta-866686253/" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit LinkedIn Profile">
+        <i class="fa-brands fa-linkedin"></i>
+    </a>
+    
+    <!-- GitHub Icon Link -->
+    <a href="https://github.com/Roottoaccess" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit GitHub Profile">
+        <i class="fa-brands fa-github"></i>
+    </a>
+</div>
+                                </div>
+                            </div>
+                            <div class="team-info">
+                                <h3>Biswarup Dutta (Team Lead)</h3>
+                                <p class="team-role">Machine Learning and Cloud Deployment</p>
+                                <p class="team-description">Implemented Machine Learning Model and Deployed in AWS Cloud while creating Docker Container</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-card animate-on-scroll">
+                        <div class="team-card-inner">
+                            <div class="team-photo">
+                                <img src="/static/images/jay.jpg" alt="Sarah Chen">
+                                <div class="photo-overlay">
+                                    <div class="social-links">
+    <!-- LinkedIn Icon Link -->
+    <a href="https://www.linkedin.com/in/jayakumarhs24ra1965/" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit LinkedIn Profile">
+        <i class="fa-brands fa-linkedin"></i>
+    </a>
+    
+    <!-- GitHub Icon Link -->
+    <a href="https://github.com/Jayakumar-24" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit GitHub Profile">
+        <i class="fa-brands fa-github"></i>
+    </a>
+</div>
+                                </div>
+                            </div>
+                            <div class="team-info">
+                                <h3>Jayakumar H S</h3>
+                                <p class="team-role">Machine Learning and Data Engineering</p>
+                                <p class="team-description">Apply Machine Learning Pipeline and also handled the Data Engineering and Model Evaluation</p>
+                            </div>
+                </div>
+                    </div>
+
+                    <div class="team-card animate-on-scroll">
+                        <div class="team-card-inner">
+                            <div class="team-photo">
+                                <img src="/static/images/bhavik.jpg" alt="Michael Rodriguez">
+                                <div class="photo-overlay">
+                                   <div class="social-links">
+    <!-- LinkedIn Icon Link -->
+    <a href="https://www.linkedin.com/in/bhavik-jain-106792191/" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit LinkedIn Profile">
+        <i class="fa-brands fa-linkedin"></i>
+    </a>
+    
+    <!-- GitHub Icon Link -->
+    <a href="https://github.com/Bhavik1896" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit GitHub Profile">
+        <i class="fa-brands fa-github"></i>
+    </a>
+</div>
+                                </div>
+                            </div>
+                            <div class="team-info">
+                                <h3>Bhavik Jain</h3>
+                                <p class="team-role">Backend Developer</p>
+                                <p class="team-description">Resposible for Web Scraping and building the backend infrastructure to support the data flow</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="team-card animate-on-scroll">
+                        <div class="team-card-inner">
+                            <div class="team-photo">
+                                <img src="/static/images/RAHUL.jpg" alt="Michael Rodriguez">
+                                <div class="photo-overlay">
+                                    <div class="social-links">
+    <!-- LinkedIn Icon Link -->
+    <a href="https://www.linkedin.com/in/rahul-hazarika-101586230/" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit LinkedIn Profile">
+        <i class="fa-brands fa-linkedin"></i>
+    </a>
+    
+    <!-- GitHub Icon Link -->
+    <a href="https://github.com/Rahul123hazarika" target="_blank" rel="noopener noreferrer" class="social-link" title="Visit GitHub Profile">
+        <i class="fa-brands fa-github"></i>
+    </a>
+</div>
+                                </div>
+                            </div>
+                            <div class="team-info">
+                                <h3>RAHUL HAZARIKA</h3>
+                                <p class="team-role">UX/UI Designer and Frontend Developer</p>
+                                <p class="team-description">Design user friendly interface and implement the frontend to ensure seamless user experience</p>
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-title animate-on-scroll">
+                <h2>Powerful Features</h2>
+                <p>Comprehensive tools designed to transform your demand forecasting process</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">🔮</div>
+                    <h3>Predictive Analytics</h3>
+                    <p>Advanced algorithms that analyze patterns and predict future demand with exceptional accuracy</p>
+                </div>
+                <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">📈</div>
+                    <h3>Trend Analysis</h3>
+                    <p>Identify emerging trends and seasonal patterns to stay ahead of market demands</p>
+                </div>
+                <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Real-time Updates</h3>
+                    <p>Continuous data processing ensures your forecasts are always current and relevant</p>
+                </div>
+                <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">📊</div>
+                    <h3>Interactive Dashboard</h3>
+                    <p>Intuitive visualizations and customizable reports for easy data interpretation</p>
+                </div>
+                <!-- <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">🔗</div>
+                    <h3>API Integration</h3>
+                    <p>Seamlessly connect with your existing systems and workflows</p>
+                </div> -->
+                <div class="feature-item animate-on-scroll">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Custom Models</h3>
+                    <p>Tailored forecasting models specific to your industry and business needs</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="contact-container">
+            <div class="section-title animate-on-scroll">
+                <h2>Get In Touch</h2>
+                <p>Ready to revolutionize your demand forecasting? Let's start the conversation</p>
+            </div>
+            <div class="contact-form animate-on-scroll">
+                <form id="contactForm">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder=" " required>
+                        <label for="name">Full Name</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder=" " required>
+                        <label for="email">Email Address</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="company" name="company" placeholder=" ">
+                        <label for="company">Company Name</label>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" rows="5" placeholder=" " required></textarea>
+                        <label for="message">Your Message</label>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Demand-ForeCasting</h3>
+                <p>Leading the future of demand forecasting with AI-powered solutions that drive business success.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#features">Features</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <a href="#">Demand Forecasting</a>
+                <a href="#">Inventory Optimization</a>
+                <a href="#">Analytics Dashboard</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>📧 info@demandiq.com</p>
+                <p>📞 +91 8904428925</p>
+                <p>📍 PES University, Bangalore City, 570001</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 DemandIQ. All rights reserved. | Privacy Policy | Terms of Service</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Simulate form submission
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Thank you for your message! We\'ll get back to you soon.');
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(17, 24, 39, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(17, 24, 39, 0.95)';
+            }
+        });
+
+        // Add floating particles effect
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 4px;
+                height: 4px;
+                background: rgba(167, 139, 250, 0.6);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: -1;
+                animation: float-particle 8s linear infinite;
+            `;
+            
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+
+        // Add particle animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float-particle {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Create particles periodically
+        setInterval(createParticle, 2000);
+
+        // Enhanced hover effects for team cards
+        document.querySelectorAll('.team-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02) rotateX(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1) rotateX(0deg)';
+            });
+        });
+
+        // Add typing effect to hero title
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            
+            type();
+        }
+
+        // Initialize typing effect when page loads
+        window.addEventListener('load', () => {
+            const heroTitle = document.querySelector('.hero h1');
+            const originalText = heroTitle.textContent;
+            setTimeout(() => {
+                typeWriter(heroTitle, originalText, 80);
+            }, 1000);
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero');
+            const rate = scrolled * -0.5;
+            
+            if (hero) {
+                hero.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Enhanced flip card interactions
+        document.querySelectorAll('.flip-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.classList.toggle('flipped');
+            });
+        });
+
+        // Add glitch effect to logo on hover
+        const logo = document.querySelector('.navbar-logo');
+        logo.addEventListener('mouseenter', function() {
+            this.style.animation = 'glitch 0.3s ease-in-out';
+        });
+
+        logo.addEventListener('animationend', function() {
+            this.style.animation = '';
+        });
+
+        // Add glitch animation
+        const glitchStyle = document.createElement('style');
+        glitchStyle.textContent = `
+            @keyframes glitch {
+                0% { transform: translate(0); }
+                20% { transform: translate(-2px, 2px); }
+                40% { transform: translate(-2px, -2px); }
+                60% { transform: translate(2px, 2px); }
+                80% { transform: translate(2px, -2px); }
+                100% { transform: translate(0); }
+            }
+        `;
+        document.head.appendChild(glitchStyle);
+    </script>
+</body>
+</html>

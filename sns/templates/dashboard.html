@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Predictor | DemandIQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+    <style>
+        @keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeSlideIn 0.6s ease forwards;
+}
+
+        @keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInOverlay {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.modal.animate-modal {
+    animation: fadeInOverlay 0.3s ease forwards;
+}
+
+.modal.animate-modal > div {
+    animation: scaleIn 0.4s ease forwards;
+}
+
+        /* Bot animations */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .bot-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes typing {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+        
+        /* Chat bubble animations */
+        .chat-bubble {
+            animation: slideInUp 0.4s ease-out;
+        }
+        
+        .chat-bubble:nth-child(even) {
+            animation-delay: 0.1s;
+        }
+        
+        /* Loading animations */
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Progress bar animation */
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        .progress-bar {
+            animation: progress 2s ease-out;
+        }
+    </style>
+    <style>
+/* Animate dropdown open (simulated effect using focus) */
+select:focus {
+  animation: dropdownFade 0.5s ease-out;
+  outline: none;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  transform: scaleY(1);
+  opacity: 1;
+  
+}
+
+@keyframes dropdownFade {
+  from {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    transform: scaleY(0.95);
+    opacity: 0.5;
+  }
+  to {
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+</style>
+    <script>
+        // Tailwind CSS configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#6366F1',
+                        'secondary': '#4F46E5',
+                        'accent': '#8B5CF6',
+                        'background': '#1E293B',
+                        'foreground': '#F3F4F6',
+                    },
+                },
+            },
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-slate-800 shadow-lg z-10 text-slate-300">
+        <div class="p-4 flex items-center justify-between border-b border-slate-700">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-robot text-2xl text-indigo-400"></i>
+                <span class="text-xl font-bold text-slate-100">Demand-ForeCasting</span>
+            </div>
+            <button id="sidebar-toggle" class="text-slate-400 hover:text-slate-200" aria-label="Toggle sidebar">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-2 mt-2 animate-slide-up delay-200">
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" id="dashboard-nav" class="flex items-center p-3 rounded-lg bg-slate-700 text-indigo-400 font-medium">
+                        <i class="fas fa-chart-line mr-3 text-indigo-400"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="predict-nav" class="flex items-center p-3 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-slate-100">
+                        <i class="fas fa-brain mr-3 text-slate-400"></i>
+                        <span>ML Predictor</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="train-nav" class="flex items-center p-3 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-slate-100">
+                        <i class="fas fa-cogs mr-3 text-slate-400"></i>
+                        <span>Train Model</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="analytics-nav" class="flex items-center p-3 rounded-lg hover:bg-slate-700 text-slate-300 hover:text-slate-100">
+                        <i class="fas fa-chart-pie mr-3 text-slate-400"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Model Status -->
+        <div id="model-status" class="m-4 p-4 bg-slate-700 rounded-lg">
+            <h3 class="font-bold mb-2 text-sm text-slate-200">Model Status</h3>
+            <div class="text-xs space-y-1 text-slate-300">
+                <div id="status-trained" class="flex items-center">
+                    <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                    <span>Model Trained</span>
+                </div>
+                <div id="status-data" class="flex items-center">
+                    <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                    <span>Data Available</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navigation -->
+        <header class="bg-slate-800 shadow-sm z-10">
+            <div class="flex items-center justify-between px-6 py-4">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-semibold text-slate-100">Platform Predictor Dashboard</h1>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- <button id="refresh-status" class="p-2 rounded-full hover:bg-slate-700" title="Refresh Status">
+                        <i class="fas fa-sync-alt text-slate-400"></i>
+                    </button> -->
+                    <button id="logout" class="p-2 rounded-full hover:bg-slate-700" title="Logout">
+                        <i class="fas fa-sign-out-alt text-slate-400"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto p-6 bg-transparent"> <!-- Changed bg-gray-50 to bg-transparent -->
+            <!-- Welcome Banner -->
+            <div class="bg-slate-800 rounded-xl shadow-sm p-6 mb-6 animate-fade-in">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2 text-slate-100">Welcome back</h2>
+                        <p class="text-slate-400">Predict the best platform for your products using machine learning.</p>
+                    </div>
+                    <button id="new-prediction-btn" class="mt-4 md:mt-0 btn-primary py-2 px-6 rounded-lg text-white font-medium flex items-center">
+                        <i class="fas fa-plus mr-2"></i> New Prediction
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up delay-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-400">Total Predictions</p>
+                            <h3 id="total-predictions" class="text-2xl font-bold mt-1 text-slate-100">0</h3>
+                            <p class="text-sm text-green-400 mt-1">Ready to predict</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-indigo-500/10 text-indigo-400">
+                            <i class="fas fa-chart-bar text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up delay-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-400">Model Accuracy</p>
+                            <h3 id="model-accuracy" class="text-2xl font-bold mt-1 text-slate-100">-</h3>
+                            <p class="text-sm text-green-400 mt-1">XGBoost ML</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-500/10 text-green-400">
+                            <i class="fas fa-bullseye text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up delay-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-400">Available Categories</p>
+                            <h3 id="categories-count" class="text-2xl font-bold mt-1 text-slate-100">-</h3>
+                            <p class="text-sm text-blue-400 mt-1">Product types</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-500/10 text-blue-400">
+                            <i class="fas fa-box-open text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up delay-400">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-400">Platforms</p>
+                            <h3 class="text-2xl font-bold mt-1 text-slate-100">4</h3>
+                            <p class="text-sm text-purple-400 mt-1">Amazon, Flipkart, Alibaba, Croma</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-purple-500/10 text-purple-400">
+                            <i class="fas fa-store text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up">
+                    <h3 class="font-bold text-lg mb-4 text-slate-100">Train Model</h3>
+                    <p class="text-slate-400 mb-4">Train the ML model with your dataset</p>
+                    <button id="train-model-btn" class="w-full btn-primary py-2 px-4 rounded-lg text-white font-medium">
+                        <i class="fas fa-cogs mr-2"></i> Train Model
+                    </button>
+                </div>
+                <div class="card bg-slate-800 rounded-xl p-6 animate-slide-up delay-100">
+                    <h3 class="font-bold text-lg mb-4 text-slate-100">Platform Prediction</h3>
+                    <p class="text-slate-400 mb-4">Predict the best platform for your product</p>
+                    <button id="predict-platform-btn" class="w-full border border-slate-600 py-2 px-4 rounded-lg text-slate-300 font-medium hover:bg-slate-700">
+                        <i class="fas fa-brain mr-2"></i> Make Prediction
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analytics Section (Hidden by default) -->
+            <div id="analytics-section" class="hidden">
+                <h2 class="text-2xl font-bold mb-6 text-slate-100">Platform Analytics</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-slate-200">Platform Distribution</h3>
+                        <div id="platformBarChart" style="width:100%;height:350px;"></div>
+                    </div>
+                    <div class="bg-slate-800 rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-slate-200">Subcategory Usage </h3>
+                        <div id="subcategoryPieChart" style="width:100%;height:350px;"></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 mt-6">
+                     <div class="bg-slate-800 rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold mb-4 text-slate-200">Price vs Rating</h3>
+                        <div id="priceRatingScatter" style="width:100%;height:350px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Prediction Modal -->
+<!-- Prediction Modal -->
+<div id="prediction-modal" class="modal p-4">
+    <div class="bg-slate-800 rounded-xl shadow-xl p-6 md:p-8 w-full max-w-6xl max-h-[90vh] overflow-y-auto relative">
+        <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white" aria-label="Close prediction modal">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+
+        <h2 class="text-2xl font-bold mb-6 text-center text-slate-100">Make a New Prediction</h2>
+
+        <!-- THIS IS THE CORRECTED LINE -->
+        <div class="grid grid-cols-1 gap-8">
+        
+            <!-- Item 1: The Form (will be on top) -->
+            <!-- <form id="prediction-form" class="space-y-5">
+                <div>
+                  <label for="subcategory" class="block text-sm font-medium text-slate-300 mb-1">Subcategory *</label>
+                  <select id="subcategory" name="subcategory" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200" required>
+                    <option value="">Select Subcategory</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="product-name" class="block text-sm font-medium text-slate-300 mb-1">Product Name *</label>
+                  <input type="text" id="product-name" name="product_name" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., Wireless Headphones" required>
+                </div>
+                <div>
+                  <label for="selling-price" class="block text-sm font-medium text-slate-300 mb-1">Selling Price *</label>
+                  <input type="number" id="selling-price" name="selling_price" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., 2999" min="0" required>
+                </div>
+                <div>
+                  <label for="mrp" class="block text-sm font-medium text-slate-300 mb-1">MRP *</label>
+                  <input type="number" id="mrp" name="mrp" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., 4999" min="0" required>
+                </div>
+                <button type="submit" class="w-full btn-primary py-3 px-5 rounded-lg text-white font-medium flex items-center justify-center">
+                    <i class="fas fa-brain mr-2"></i> Predict Platform
+                </button>
+            </form> -->
+            <form id="prediction-form" class="space-y-5">
+
+    <div class="fade-in-up">
+      <label for="subcategory" class="block text-sm font-medium text-slate-300 mb-1">Subcategory *</label>
+      <select id="subcategory" name="subcategory" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200" required>
+        <option value="">Select Subcategory</option>
+      </select>
+    </div>
+
+    <div class="fade-in-up">
+      <label for="product-name" class="block text-sm font-medium text-slate-300 mb-1">Product Name *</label>
+      <input type="text" id="product-name" name="product_name" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., Wireless Headphones" required>
+    </div>
+
+    <div class="fade-in-up">
+      <label for="selling-price" class="block text-sm font-medium text-slate-300 mb-1">Selling Price *</label>
+      <input type="number" id="selling-price" name="selling_price" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., 2999" min="0" required>
+    </div>
+
+    <div class="fade-in-up">
+      <label for="mrp" class="block text-sm font-medium text-slate-300 mb-1">MRP *</label>
+      <input type="number" id="mrp" name="mrp" class="w-full p-3 bg-slate-700 border border-slate-600 rounded-md text-slate-200 placeholder-slate-500" placeholder="e.g., 4999" min="0" required>
+    </div>
+
+    <button type="submit" class="w-full btn-primary py-3 px-5 rounded-lg text-white font-medium flex items-center justify-center fade-in-up">
+        <i class="fas fa-brain mr-2"></i> Predict Platform
+    </button>
+
+</form>
+
+
+            <!-- Item 2: Results & Charts (will be below the form) -->
+            <div>
+                <div id="prediction-result" class="prediction-result">
+                    <h3 class="font-bold text-lg mb-4 text-slate-100">Prediction Result</h3>
+                    <div id="prediction-content"></div>
+                    <div id="features-used-display" class="mt-4 text-xs text-slate-400"></div>
+                </div>
+
+                <div id="realtime-subcategory-chart-container" class="mt-6 hidden">
+                    <hr class="my-6 border-slate-700">
+                    <h4 class="font-semibold text-lg mb-3 text-slate-200">
+                        Live Data for: <span id="realtime-chart-subcategory-name" class="font-bold text-indigo-400"></span>
+                    </h4>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="bg-slate-900/50 p-4 rounded-md">
+                            <h5 class="text-sm font-medium text-center mb-2 text-slate-300">Price Distribution</h5>
+                            <div id="realtimeSubcategoryPriceChart" style="width:100%;height:250px;"></div>
+                        </div>
+                        <div class="bg-slate-900/50 p-4 rounded-md">
+                            <h5 class="text-sm font-medium text-center mb-2 text-slate-300">Rating Distribution</h5>
+                            <div id="realtimeSubcategoryRatingChart" style="width:100%;height:250px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Training Modal -->
+<div id="training-modal" class="modal">
+    <div class="bg-slate-800 rounded-lg p-6 w-full max-w-md mx-4 text-slate-200">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold">Train Model</h2>
+            <button id="close-training-modal" class="text-slate-400 hover:text-white" aria-label="Close training modal" title="Close">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <p class="text-slate-400">This will train the XGBoost model with your dataset.</p>
+            <button id="start-training" class="w-full btn-primary py-2 px-4 rounded-lg text-white font-medium">
+                <i class="fas fa-cogs mr-2"></i> Start Training
+            </button>
+            <div id="training-progress" class="hidden">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin text-2xl text-indigo-400 mb-2"></i>
+                    <p>Training model... Please wait.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Bot -->
+<div id="help-bot" class="fixed bottom-4 right-4 z-50">
+    <!-- Bot Toggle Button -->
+    <button id="bot-toggle" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full p-4 shadow-lg bot-float" title="Open DemandIQ Assistant">
+        <i class="fas fa-robot text-xl"></i>
+    </button>
+    
+    <!-- Chat Window -->
+    <div id="chat-window" class="hidden absolute bottom-16 right-0 w-80 bg-slate-800 rounded-lg shadow-xl border border-slate-700 animate-slide-in-up">
+        <!-- Chat Header -->
+        <div class="bg-indigo-600 text-white p-4 rounded-t-lg flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-robot mr-2"></i>
+                <span class="font-medium">DemandIQ Assistant</span>
+            </div>
+            <button id="close-chat" class="text-white hover:text-gray-200" title="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="h-64 overflow-y-auto p-4 space-y-3 bg-slate-900">
+            <!-- Welcome message -->
+            <div class="bot-message chat-bubble">
+                <div class="bg-slate-700 text-slate-200 p-3 rounded-lg max-w-xs">
+                    <p class="text-sm">👋 Hi! I'm your DemandIQ Assistant. I can help you understand how to use this platform predictor!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="p-3 border-t border-slate-700 bg-slate-800">
+            <p class="text-xs text-slate-400 mb-2">Quick Help:</p>
+            <div class="space-y-1">
+                <button class="help-option w-full text-left text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 p-2 rounded" data-topic="prediction">
+                    🔮 How to make predictions
+                </button>
+                <button class="help-option w-full text-left text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 p-2 rounded" data-topic="training">
+                    🎯 Training the model
+                </button>
+                <button class="help-option w-full text-left text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 p-2 rounded" data-topic="analytics">
+                    📊 Understanding analytics
+                </button>
+            </div>
+        </div>
+        
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="hidden p-4">
+            <div class="bg-slate-700 text-slate-200 p-3 rounded-lg max-w-xs">
+                <div class="typing-indicator">
+                    <span class="text-sm">Bot is typing...</span>
+                    <span class="inline-block w-1 h-1 bg-slate-400 rounded-full ml-1"></span>
+                    <span class="inline-block w-1 h-1 bg-slate-400 rounded-full ml-1"></span>
+                    <span class="inline-block w-1 h-1 bg-slate-400 rounded-full ml-1"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Notification (No change needed, already styled for dark) -->
+<div id="notification" class="notification">
+    <div class="flex items-center">
+        <i id="notification-icon" class="fas fa-check-circle mr-2"></i>
+        <span id="notification-text">Success!</span>
+    </div>
+</div>
+<script>
+  // This part remains the same
+  window.FLASK_API_ENDPOINTS = {
+    logout: "{{ url_for('logout') }}"
+  };
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("prediction-modal");
+    const openBtn = document.getElementById("new-prediction-btn");
+    const closeBtn = document.getElementById("close-modal");
+
+    openBtn.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        modal.classList.add("animate-modal");
+    });
+
+    closeBtn.addEventListener("click", () => {
+        modal.classList.remove("animate-modal");
+        modal.classList.add("hidden");
+    });
+});
+</script>
+
+<script>
+// Enhanced JavaScript for animations and bot functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Bot functionality
+    const botToggle = document.getElementById('bot-toggle');
+    const chatWindow = document.getElementById('chat-window');
+    const closeChat = document.getElementById('close-chat');
+    const chatMessages = document.getElementById('chat-messages');
+    const helpOptions = document.querySelectorAll('.help-option');
+    const typingIndicator = document.getElementById('typing-indicator');
+    
+    // Bot responses
+    const botResponses = {
+        prediction: [
+            "🔮 <strong>Making Predictions:</strong><br>1. Click 'New Prediction' or 'Make Prediction'<br>2. Select your product subcategory<br>3. Enter product name, selling price, and MRP<br>4. Click 'Predict Platform' to get AI recommendations!",
+            "💡 <strong>Pro Tips:</strong><br>• Make sure your prices are realistic<br>• Choose the correct subcategory for better accuracy<br>• The model considers price ratios and product categories"
+        ],
+        training: [
+            "🎯 <strong>Training the Model:</strong><br>1. Click 'Train Model' button<br>2. The system will use your dataset to train the XGBoost model<br>3. Wait for training to complete<br>4. Check model accuracy in the dashboard!",
+            "⚡ <strong>Training Tips:</strong><br>• Training improves prediction accuracy<br>• More data = better predictions<br>• Monitor the model status in the sidebar"
+        ],
+        analytics: [
+            "📊 <strong>Understanding Analytics:</strong><br>1. Click 'Analytics' in the sidebar<br>2. View platform distribution charts<br>3. Analyze subcategory usage patterns<br>4. Explore price vs rating relationships!",
+            "📈 <strong>Chart Insights:</strong><br>• Bar charts show platform popularity<br>• Pie charts reveal category distribution<br>• Scatter plots show price-rating correlations"
+        ]
+    };
+    
+    // Function to add bot message
+    function addBotMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'bot-message chat-bubble';
+        messageDiv.innerHTML = `
+            <div class="bg-slate-700 text-slate-200 p-3 rounded-lg max-w-xs">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Function to show typing indicator
+    function showTypingIndicator() {
+        typingIndicator.classList.remove('hidden');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Function to hide typing indicator
+    function hideTypingIndicator() {
+        typingIndicator.classList.add('hidden');
+    }
+    
+    // Function to simulate bot response with typing
+    function simulateBotResponse(topic) {
+        showTypingIndicator();
+        
+        setTimeout(() => {
+            hideTypingIndicator();
+            const responses = botResponses[topic];
+            
+            responses.forEach((response, index) => {
+                setTimeout(() => {
+                    addBotMessage(response);
+                }, index * 1000);
+            });
+        }, 1500);
+    }
+    
+    // Show/hide chat
+    botToggle.addEventListener('click', function() {
+        chatWindow.classList.toggle('hidden');
+    });
+    
+    closeChat.addEventListener('click', function() {
+        chatWindow.classList.add('hidden');
+    });
+    
+    // Handle help option clicks
+    helpOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const topic = this.dataset.topic;
+            simulateBotResponse(topic);
+        });
+});
+});
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
